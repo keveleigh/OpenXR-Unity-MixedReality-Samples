@@ -41,10 +41,18 @@ namespace Microsoft.MixedReality.OpenXR.Sample
 #if UNITY_EDITOR
         protected void OnValidate()
         {
-            InitializeComponents();
+            // We check if this instance has actually been changed, since OnValidate()
+            // is called on save and Unity detects any setter calls for non-basic
+            // types (even if we're just setting the same value) as dirtying the prefab.
+            // If this script is consumed via UPM, this causes Unity to try to save to
+            // save "changes" to a prefab in an immutable folder.
+            if (UnityEditor.EditorUtility.IsDirty(this))
+            {
+                InitializeComponents();
 
-            UpdateTextLayout();
-            UpdateColors();
+                UpdateTextLayout();
+                UpdateColors();
+            }
         }
 #endif
 
